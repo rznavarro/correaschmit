@@ -399,14 +399,13 @@
   section {
     padding: 100px 48px;
     position: relative;
+    isolation: isolate;
   }
   section.dark-section {
-    background: rgba(5,10,20,0.85);
-    backdrop-filter: blur(0px);
+    background: #050a14;
   }
   section.light-section {
-    background: rgba(10,20,40,0.7);
-    backdrop-filter: blur(0px);
+    background: #0a1428;
   }
   .section-label {
     font-size: 11px;
@@ -443,7 +442,7 @@
   .stats-bar {
     display: flex;
     gap: 1px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.06);
     border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 100px;
@@ -451,7 +450,7 @@
   .stat-item {
     flex: 1;
     padding: 32px 28px;
-    background: rgba(5,15,30,0.5);
+    background: #050f1e;
     backdrop-filter: blur(20px);
     text-align: center;
     transition: background 0.2s;
@@ -1021,7 +1020,16 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    let ticking = false;
+    const fn = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 60);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
